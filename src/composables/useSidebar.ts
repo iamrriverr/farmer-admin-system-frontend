@@ -1,36 +1,30 @@
-import { storeToRefs } from 'pinia'
-import { useSidebarStore } from '@/stores/sidebar'
-import type { ModuleType } from '@/types'
+import { storeToRefs } from 'pinia';
+
+import { useSidebarStore } from '@/stores/sidebar';
+import type { ModuleType } from '@/types';
 
 export const useSidebar = () => {
-  const sidebarStore = useSidebarStore()
-  
-  const {
-    activeModule,
-    isSecondaryExpanded,
-    isHovering,
-    shouldShowSecondary
-  } = storeToRefs(sidebarStore)
+  const sidebarStore = useSidebarStore();
+
+  const { activeModule, isSecondaryExpanded } = storeToRefs(sidebarStore);
 
   const setActiveModule = (module: ModuleType): void => {
-    sidebarStore.setActiveModule(module)
-  }
+    sidebarStore.setActiveModule(module);
+  };
 
   const toggleSecondary = (): void => {
-    sidebarStore.toggleSecondary()
-  }
+    sidebarStore.toggleSecondary();
+  };
 
-  const setHovering = (value: boolean): void => {
-    sidebarStore.setHovering(value)
-  }
+  const setSecondaryExpanded = (value: boolean): void => {
+    sidebarStore.setSecondaryExpanded(value);
+  };
 
   return {
     activeModule,
     isSecondaryExpanded,
-    isHovering,
-    shouldShowSecondary,
     setActiveModule,
     toggleSecondary,
-    setHovering
-  }
-}
+    setSecondaryExpanded,
+  };
+};

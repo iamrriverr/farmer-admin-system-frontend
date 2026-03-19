@@ -1,26 +1,59 @@
 <script setup lang="ts">
-import { useSidebarStore } from '@/stores/sidebar'
-import { useRouter } from 'vue-router'
-import { NAVIGATION_ITEMS } from '@/constants/navigation'
-import SidebarLogo from './SidebarLogo.vue'
-import SidebarMenu from './SidebarMenu.vue'
-import type { MenuItem } from '@/types'
+import { computed, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
-const sidebarStore = useSidebarStore()
-const router = useRouter()
+import { usePermission } from '@/composables/usePermission';
+import { NAVIGATION_ITEMS } from '@/constants/navigation';
+import { useSidebarStore } from '@/stores/sidebar';
+import type { MenuItem } from '@/types';
+
+import SidebarLogo from './SidebarLogo.vue';
+import SidebarMenu from './SidebarMenu.vue';
+import UserMenu from './UserMenu.vue';
+
+const sidebarStore = useSidebarStore();
+const router = useRouter();
+const route = useRoute();
+const { hasRoutePermission } = usePermission();
+
+const showUserMenu = ref(false);
+
+// 根據權限過濾選單項目
+const filteredMenuItems = computed(() => {
+  return NAVIGATION_ITEMS.filter((item) => {
+    // 新對話和對話歷史不需要權限檢查（所有登入使用者都可以使用）
+    if (item.id === 'new-chat' || item.id === 'conversation') {
+      return true;
+    }
+    // 其他選單項目需要檢查權限
+    return hasRoutePermission(item.route);
+  });
+});
+
+const userItem: MenuItem = {
+  id: 'new-chat', // 使用 new-chat 作為預設值（不會實際使用）
+  icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',
+  label: '使用者設定',
+  route: '', // 彈窗處理
+};
 
 const handleItemClick = (item: MenuItem): void => {
-  // 如果是「新對話」按鈕
+  // 1. 先處理 Store 狀態（主模組切換，觸發相關 UI 反應）
+  sidebarStore.setActiveModule(item.id);
+
+  // 2. 處理「新對話」特殊邏輯
   if (item.id === 'new-chat') {
-    router.push('/chat') // 跳轉到空白對話頁，不創建對話
-    sidebarStore.setActiveModule('conversation') // 顯示對話歷史
-    return
+    router.push('/chat');
+    sidebarStore.setSecondaryExpanded(true);
+    sidebarStore.activeModule = 'conversation';
+    return;
   }
 
-  // 其他選單項
-  sidebarStore.setActiveModule(item.id)
-  router.push(item.route)
-}
+  // 3. 通用路由跳轉（若目標路徑與當前不同則觸發）
+  if (item.route && route.path !== item.route) {
+    router.push(item.route);
+  }
+};
 </script>
 
 <template>
@@ -30,68 +63,62 @@ const handleItemClick = (item: MenuItem): void => {
     </div>
 
     <nav class="menu-nav">
-      <SidebarMenu v-for="item in NAVIGATION_ITEMS" :key="item.id" :item="item"
-        :is-active="sidebarStore.activeModule === item.id" :is-new-chat="item.id === 'new-chat'"
-        @click="handleItemClick(item)" />
-    </nav>
+      <div class="menu-items-top scrollbar-custom">
+        <SidebarMenu v-for="item in filteredMenuItems" :key="item.id" :item="item"
+          :is-active="sidebarStore.activeModule === item.id" :is-new-chat="item.id === 'new-chat'"
+          @click="handleItemClick(item)" />
+      </div>
 
-    <div class="user-avatar-container">
-      <button class="user-avatar-button" title="使用者">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      </button>
-    </div>
+      <div class="menu-items-bottom">
+        <SidebarMenu :item="userItem" :is-active="showUserMenu" :suppress-tooltip="showUserMenu"
+          @click="showUserMenu = !showUserMenu" />
+        <UserMenu v-if="showUserMenu" @close="showUserMenu = false" />
+      </div>
+    </nav>
   </div>
 </template>
 
 <style scoped>
 .main-sidebar {
-  width: 5rem;
-  height: 100vh;
-  background-color: var(--bg-secondary);
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 1.5rem 0;
+  width: 5rem;
+  height: 100vh;
+  padding: 1.5rem 0 0;
+  background-color: var(--bg-secondary);
 }
 
 .logo-container {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: center;
   margin-bottom: 2rem;
 }
 
 .menu-nav {
+  display: flex;
   flex: 1;
-  display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0 0.75rem;
+  min-height: 0;
 }
 
-.user-avatar-container {
-  margin-top: auto;
-  padding-top: 1rem;
-}
-
-.user-avatar-button {
-  width: 2.5rem;
-  height: 2.5rem;
-  background-color: var(--bg-secondary);
-  border-radius: 50%;
+.menu-items-top {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  transition: all 0.2s;
-  border: none;
-  cursor: pointer;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 0.75rem;
+  overflow: hidden auto;
 }
 
-.user-avatar-button:hover {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
-  transform: scale(1.05);
+.menu-items-bottom {
+  position: relative;
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  padding: 1rem 0.75rem 1.5rem;
+  margin-top: auto;
+  background-color: var(--bg-secondary);
 }
 </style>

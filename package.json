@@ -6,10 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint:prettier": "prettier --write \"src/**/*.{js,ts,json,tsx,css,scss,vue,html,md}\"",
+    "lint:eslint": "eslint \"src/**/*.{vue,ts,tsx}\" --fix",
+    "lint:stylelint": "stylelint \"src/**/*.{css,scss,vue}\" --fix",
+    "lint": "pnpm lint:prettier && pnpm lint:eslint && pnpm lint:stylelint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@vicons/ionicons5": "^0.13.0",
+    "axios": "^1.13.2",
     "highlight.js": "^11.11.1",
     "marked": "^16.4.0",
     "pinia": "^3.0.3",
@@ -18,15 +24,43 @@
     "vue-router": "^4.6.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
     "@types/marked": "^6.0.0",
     "@types/node": "^24.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.53.1",
+    "@typescript-eslint/parser": "^8.53.1",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vue/tsconfig": "^0.8.1",
     "autoprefixer": "^10.4.21",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-vue": "^10.7.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^16.2.7",
     "postcss": "^8.5.6",
+    "postcss-html": "^1.8.1",
+    "prettier": "^3.8.1",
+    "stylelint": "^17.0.0",
+    "stylelint-config-html": "^1.1.0",
+    "stylelint-config-recess-order": "^7.6.0",
+    "stylelint-config-recommended-vue": "^1.6.1",
+    "stylelint-config-standard-scss": "^17.0.0",
     "tailwindcss": "^3.4.18",
     "typescript": "~5.9.3",
     "vite": "^7.1.7",
     "vue-tsc": "^3.1.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{scss,css,vue}": [
+      "stylelint --fix"
+    ]
   }
 }

@@ -1,39 +1,38 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import type { ModuleType } from "@/types";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+
+import type { ModuleType } from '@/types';
 
 export const useSidebarStore = defineStore(
-  "sidebar",
+  'sidebar',
   () => {
-    const activeModule = ref<ModuleType>("conversation");
-    const isHovering = ref<boolean>(false);
-    const isPinned = ref<boolean>(false);
-
-    // ✅ 簡化邏輯：只依賴 isPinned 和 isHovering
-    const shouldShowSecondary = computed<boolean>(() => {
-      return isPinned.value || isHovering.value;
-    });
+    const activeModule = ref<ModuleType>('conversation');
+    const isSecondaryExpanded = ref<boolean>(true); // 預設展開（如 ChatGPT）
 
     const setActiveModule = (module: ModuleType): void => {
-      activeModule.value = module;
+      // 如果點擊的是當前模組，則切換展開狀態
+      if (activeModule.value === module) {
+        isSecondaryExpanded.value = !isSecondaryExpanded.value;
+      } else {
+        activeModule.value = module;
+        isSecondaryExpanded.value = true;
+      }
     };
 
-    const setHovering = (value: boolean): void => {
-      isHovering.value = value;
+    const toggleSecondary = (): void => {
+      isSecondaryExpanded.value = !isSecondaryExpanded.value;
     };
 
-    const togglePin = (): void => {
-      isPinned.value = !isPinned.value;
+    const setSecondaryExpanded = (value: boolean): void => {
+      isSecondaryExpanded.value = value;
     };
 
     return {
       activeModule,
-      isHovering,
-      isPinned,
-      shouldShowSecondary,
+      isSecondaryExpanded,
       setActiveModule,
-      setHovering,
-      togglePin,
+      toggleSecondary,
+      setSecondaryExpanded,
     };
   },
   {

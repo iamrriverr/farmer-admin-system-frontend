@@ -1,0 +1,150 @@
+﻿
+> farmer-admin-system@0.0.0 lint C:\Users\steve\workspace\vue3\farmer-admin-system
+> pnpm lint:prettier && pnpm lint:eslint && pnpm lint:stylelint
+
+
+> farmer-admin-system@0.0.0 lint:prettier C:\Users\steve\workspace\vue3\farmer-admin-system
+> prettier --write "src/**/*.{js,ts,json,tsx,css,scss,vue,html,md}"
+
+[90msrc/api/auth.ts[39m 49ms (unchanged)
+[90msrc/api/chat.ts[39m 20ms (unchanged)
+[90msrc/api/form.ts[39m 16ms (unchanged)
+[90msrc/api/index.ts[39m 3ms (unchanged)
+[90msrc/api/knowledge.ts[39m 19ms (unchanged)
+[90msrc/App.vue[39m 55ms (unchanged)
+[90msrc/assets/styles/main.css[39m 36ms (unchanged)
+[90msrc/components/base/BaseButton.vue[39m 43ms (unchanged)
+[90msrc/components/base/BaseInput.vue[39m 27ms (unchanged)
+[90msrc/components/base/BaseModal.vue[39m 30ms (unchanged)
+[90msrc/components/base/IconBtn.vue[39m 12ms (unchanged)
+[90msrc/composables/useFilePreview.ts[39m 13ms (unchanged)
+[90msrc/composables/useFileUpload.ts[39m 39ms (unchanged)
+[90msrc/composables/usePasswordValidation.ts[39m 11ms (unchanged)
+[90msrc/composables/usePermission.ts[39m 11ms (unchanged)
+[90msrc/composables/useScrollSpy.ts[39m 12ms (unchanged)
+[90msrc/composables/useSidebar.ts[39m 4ms (unchanged)
+[90msrc/composables/useStreaming.ts[39m 23ms (unchanged)
+[90msrc/composables/useTheme.ts[39m 7ms (unchanged)
+[90msrc/config/api.ts[39m 3ms (unchanged)
+[90msrc/config/app.ts[39m 3ms (unchanged)
+[90msrc/config/index.ts[39m 1ms (unchanged)
+[90msrc/config/permissions.ts[39m 9ms (unchanged)
+[90msrc/constants/icons.ts[39m 4ms (unchanged)
+[90msrc/constants/index.ts[39m 1ms (unchanged)
+[90msrc/constants/navigation.ts[39m 3ms (unchanged)
+[90msrc/layout/aside/index.vue[39m 4ms (unchanged)
+[90msrc/layout/aside/MainSidebar.vue[39m 23ms (unchanged)
+[90msrc/layout/aside/SecondarySidebar.vue[39m 14ms (unchanged)
+[90msrc/layout/aside/SidebarLogo.vue[39m 10ms (unchanged)
+[90msrc/layout/aside/SidebarMenu.vue[39m 28ms (unchanged)
+[90msrc/layout/aside/UserMenu.vue[39m 40ms (unchanged)
+[90msrc/layout/AuthLayout.vue[39m 4ms (unchanged)
+[90msrc/layout/header/HeaderTitle.vue[39m 6ms (unchanged)
+[90msrc/layout/header/index.vue[39m 7ms (unchanged)
+[90msrc/layout/index.vue[39m 9ms (unchanged)
+[90msrc/layout/main/index.vue[39m 6ms (unchanged)
+[90msrc/main.ts[39m 2ms (unchanged)
+[90msrc/router/guard.ts[39m 5ms (unchanged)
+[90msrc/router/index.ts[39m 10ms (unchanged)
+[90msrc/services/chatService.ts[39m 11ms (unchanged)
+[90msrc/services/formService.ts[39m 8ms (unchanged)
+[90msrc/services/index.ts[39m 1ms (unchanged)
+[90msrc/services/knowledgeService.ts[39m 7ms (unchanged)
+[90msrc/services/uploadService.ts[39m 9ms (unchanged)
+[90msrc/stores/auth.ts[39m 8ms (unchanged)
+[90msrc/stores/chat.ts[39m 11ms (unchanged)
+[90msrc/stores/sidebar.ts[39m 3ms (unchanged)
+[90msrc/stores/theme.ts[39m 3ms (unchanged)
+[90msrc/stores/user.ts[39m 3ms (unchanged)
+[90msrc/theme/config.ts[39m 3ms (unchanged)
+[90msrc/types/api.ts[39m 3ms (unchanged)
+[90msrc/types/auth.ts[39m 2ms (unchanged)
+[90msrc/types/chat.ts[39m 2ms (unchanged)
+[90msrc/types/common.ts[39m 1ms (unchanged)
+[90msrc/types/department.ts[39m 1ms (unchanged)
+[90msrc/types/form.ts[39m 3ms (unchanged)
+[90msrc/types/index.ts[39m 1ms (unchanged)
+[90msrc/types/knowledge.ts[39m 2ms (unchanged)
+[90msrc/types/rag.ts[39m 2ms (unchanged)
+[90msrc/types/sidebar.ts[39m 1ms (unchanged)
+[90msrc/types/theme.ts[39m 1ms (unchanged)
+[90msrc/types/upload.ts[39m 5ms (unchanged)
+[90msrc/types/user.ts[39m 2ms (unchanged)
+[90msrc/utils/format.ts[39m 9ms (unchanged)
+[90msrc/utils/helpers.ts[39m 0ms (unchanged)
+[90msrc/utils/request.ts[39m 8ms (unchanged)
+[90msrc/views/auth/ChangePassword.vue[39m 37ms (unchanged)
+[90msrc/views/auth/ForgotPassword.vue[39m 22ms (unchanged)
+[90msrc/views/auth/index.vue[39m 27ms (unchanged)
+[90msrc/views/chat/components/ChatHistory.vue[39m 25ms (unchanged)
+[90msrc/views/chat/components/index.ts[39m 2ms (unchanged)
+[90msrc/views/chat/components/inputs/ChatInput.vue[39m 40ms (unchanged)
+[90msrc/views/chat/components/inputs/UploadedFileList.vue[39m 23ms (unchanged)
+[90msrc/views/chat/components/messages/ChatEmptyState.vue[39m 9ms (unchanged)
+[90msrc/views/chat/components/messages/ChatMessage.vue[39m 35ms (unchanged)
+[90msrc/views/chat/components/messages/SourceReference.vue[39m 17ms (unchanged)
+[90msrc/views/chat/components/messages/TypingIndicator.vue[39m 6ms (unchanged)
+[90msrc/views/chat/components/modals/DeleteConfirmModal.vue[39m 10ms (unchanged)
+[90msrc/views/chat/components/modals/FilePreviewModal.vue[39m 31ms (unchanged)
+[90msrc/views/chat/composables/useChat.ts[39m 12ms (unchanged)
+[90msrc/views/chat/composables/useScrollControl.ts[39m 4ms (unchanged)
+[90msrc/views/chat/composables/useTypewriter.ts[39m 6ms (unchanged)
+[90msrc/views/chat/index.vue[39m 21ms (unchanged)
+[90msrc/views/departments/components/DepartmentTable.vue[39m 18ms (unchanged)
+[90msrc/views/departments/components/modals/DepartmentModal.vue[39m 17ms (unchanged)
+[90msrc/views/departments/components/PageHeader.vue[39m 3ms (unchanged)
+[90msrc/views/departments/components/Pagination.vue[39m 15ms (unchanged)
+[90msrc/views/departments/index.vue[39m 13ms (unchanged)
+[90msrc/views/e-form/index.vue[39m 1ms (unchanged)
+[90msrc/views/knowledge-base/index.vue[39m 1ms (unchanged)
+[90msrc/views/staff/components/modals/ChangeRoleModal.vue[39m 13ms (unchanged)
+[90msrc/views/staff/components/modals/ConfirmDeleteModal.vue[39m 8ms (unchanged)
+[90msrc/views/staff/components/modals/ResetPasswordModal.vue[39m 11ms (unchanged)
+[90msrc/views/staff/components/modals/UserModal.vue[39m 21ms (unchanged)
+[90msrc/views/staff/components/PageHeader.vue[39m 3ms (unchanged)
+[90msrc/views/staff/components/Pagination.vue[39m 16ms (unchanged)
+[90msrc/views/staff/components/SearchToolbar.vue[39m 13ms (unchanged)
+[90msrc/views/staff/components/StaffTable.vue[39m 26ms (unchanged)
+src/views/staff/index.vue 26ms
+[90msrc/vite-env.d.ts[39m 2ms (unchanged)
+
+> farmer-admin-system@0.0.0 lint:eslint C:\Users\steve\workspace\vue3\farmer-admin-system
+> eslint "src/**/*.{vue,ts,tsx}" --fix
+
+
+C:\Users\steve\workspace\vue3\farmer-admin-system\src\layout\aside\UserMenu.vue
+  35:35  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\steve\workspace\vue3\farmer-admin-system\src\views\chat\components\messages\ChatMessage.vue
+  64:32  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\steve\workspace\vue3\farmer-admin-system\src\views\staff\index.vue
+  177:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  178:19  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+??4 problems (0 errors, 4 warnings)
+
+
+> farmer-admin-system@0.0.0 lint:stylelint C:\Users\steve\workspace\vue3\farmer-admin-system
+> stylelint "src/**/*.{css,scss,vue}" --fix
+
+pnpm : 
+位於 線路:1 字元:1
++ pnpm run lint 2>&1 | Out-File -FilePath lin
+t_output.txt -Encoding UTF ...
++ ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified:  
+   (:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandE 
+   rror
+ 
+src/layout/aside/UserMenu.vue
+  [2m205:16[22m  [31m[31m??[39m  Unexpect
+ed missing generic font family  [2mfont-fami
+ly-no-missing-generic-family-keyword[22m
+
+[31m??[39m 1 problem ([31m1 error[39m, [3
+3m0 warnings[39m)
+
+?LIFECYCLE??Command failed with exit code 2.
+?LIFECYCLE??Command failed with exit code 2.

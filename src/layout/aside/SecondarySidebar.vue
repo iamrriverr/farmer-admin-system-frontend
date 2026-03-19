@@ -1,42 +1,19 @@
 <script setup lang="ts">
-import { useSidebarStore } from '@/stores/sidebar'
-import ChatHistory from '@/components/chat/ChatHistory.vue'
+import { useSidebarStore } from '@/stores/sidebar';
+import ChatHistory from '@/views/chat/components/ChatHistory.vue';
 
-const sidebarStore = useSidebarStore()
-
-// ✅ SecondarySidebar 自己也需要觸發 hover
-const handleMouseEnter = (): void => {
-  if (!sidebarStore.isPinned) {
-    sidebarStore.setHovering(true)
-  }
-}
-
-const handleMouseLeave = (): void => {
-  if (!sidebarStore.isPinned) {
-    sidebarStore.setHovering(false)
-  }
-}
+const sidebarStore = useSidebarStore();
 </script>
 
 <template>
   <div class="secondary-sidebar" :class="{
-    expanded: sidebarStore.shouldShowSecondary,
-    pinned: sidebarStore.isPinned
-  }" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-    <div class="secondary-sidebar-content scrollbar-thin">
-      <div v-if="sidebarStore.activeModule === 'conversation' || sidebarStore.activeModule === 'new-chat'"
-        class="sidebar-section">
+    expanded: sidebarStore.isSecondaryExpanded,
+  }">
+    <div class="secondary-sidebar-content scrollbar-custom">
+      <div v-if="
+        sidebarStore.activeModule === 'conversation' || sidebarStore.activeModule === 'new-chat'
+      " class="sidebar-section">
         <ChatHistory />
-      </div>
-
-      <div v-else-if="sidebarStore.activeModule === 'knowledge'" class="sidebar-section">
-        <h3 class="section-title">知識庫分類</h3>
-        <p class="section-placeholder">待實作...</p>
-      </div>
-
-      <div v-else-if="sidebarStore.activeModule === 'forms'" class="sidebar-section">
-        <h3 class="section-title">表單模板</h3>
-        <p class="section-placeholder">待實作...</p>
       </div>
     </div>
   </div>
@@ -44,41 +21,34 @@ const handleMouseLeave = (): void => {
 
 <style scoped>
 .secondary-sidebar {
-  height: 100vh;
-  background-color: var(--bg-secondary);
-  border-right: 1px solid var(--border-primary);
-  overflow: hidden;
-  width: 0;
   position: fixed;
-  left: 5rem;
   top: 0;
+  left: 5rem;
   z-index: 30;
-  transition: width 0.15s ease, opacity 0.15s ease;
-  opacity: 0;
-  pointer-events: none;
   visibility: hidden;
+  width: 0;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  background-color: var(--bg-secondary);
+  opacity: 0;
+  /* 統一動效：與 MainLayout 同步，避免內容跳動或回彈感 */
+  transition:
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .secondary-sidebar.expanded {
+  visibility: visible;
   width: 16rem;
-  opacity: 1;
   pointer-events: auto;
-  visibility: visible;
-}
-
-.secondary-sidebar.pinned {
-  position: relative;
-  left: 0;
   opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
 }
 
 .secondary-sidebar-content {
   width: 16rem;
   height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: hidden auto;
 }
 
 .sidebar-section {
@@ -86,16 +56,16 @@ const handleMouseLeave = (): void => {
 }
 
 .section-title {
-  color: var(--text-primary);
-  font-weight: 600;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
   padding: 1rem 1rem 0;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .section-placeholder {
-  color: var(--text-tertiary);
-  font-size: 0.875rem;
   padding: 0 1rem;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
 }
 </style>

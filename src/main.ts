@@ -1,12 +1,12 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
-import router from "./router";
-import App from "./App.vue";
+// 全域樣式（包含 Tailwind + 自定義樣式 + 動畫）
+import '@/assets/styles/main.css';
 
-// 全域樣式
-import "@/assets/styles/tailwind.css";
-import "@/assets/styles/animations.css";
+import { createPinia } from 'pinia';
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
+import { createApp } from 'vue';
+
+import App from './App.vue';
+import router from './router';
 
 const app = createApp(App);
 
@@ -16,4 +16,4 @@ pinia.use(piniaPluginPersistedstate);
 
 app.use(pinia);
 app.use(router);
-app.mount("#app");
+app.mount('#app');

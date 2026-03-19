@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { RouterView } from "vue-router";
+import { RouterView } from 'vue-router';
+
+import { useTheme } from '@/composables/useTheme';
+
+const { initTheme } = useTheme();
+initTheme();
 </script>
 
 <template>
@@ -12,8 +17,7 @@ import { RouterView } from "vue-router";
 .app-root {
   height: 100%;
   min-height: 100vh;
-  background: var(--bg-primary);
   color: var(--text-primary);
-  transition: background-color 0.3s ease;
+  background: var(--bg-primary);
 }
 </style>

@@ -1,73 +1,61 @@
-import { defineStore } from "pinia";
-import { ref, computed } from "vue";
-import type { UserInfo } from "@/types/user";
+import { defineStore } from 'pinia';
+import { computed, ref } from 'vue';
 
+import type { UserInfo } from '@/types/user';
+import { ROLE_LABELS } from '@/types/user';
+
+/**
+ * 用戶資訊狀態管理
+ * 專注於管理用戶個人資料
+ */
 export const useUserStore = defineStore(
-  "user",
+  'user',
   () => {
     // State
     const user = ref<UserInfo | null>(null);
-    const token = ref<string | null>(null);
 
     // Getters
-    const isAuthenticated = computed(() => !!user.value && !!token.value);
-    const isAdmin = computed(() => user.value?.role === "admin");
-    const userName = computed(() => user.value?.name || "訪客");
+    const isAdmin = computed(() => user.value?.role === 'admin');
+    const isManager = computed(() => user.value?.role === 'manager');
+    const userName = computed(() => user.value?.name || '');
     const userRole = computed(() => {
-      const roleMap = {
-        admin: "管理員",
-        manager: "管理者",
-        user: "一般用戶",
-        viewer: "訪客",
-      };
-      return user.value?.role ? roleMap[user.value.role] : "訪客";
+      return user.value?.role ? ROLE_LABELS[user.value.role] : '';
     });
+    const userDepartment = computed(() => user.value?.department || '');
 
     // Actions
+    /**
+     * 設定用戶資訊
+     */
     const setUser = (userInfo: UserInfo): void => {
       user.value = userInfo;
     };
 
-    const setToken = (tokenValue: string): void => {
-      token.value = tokenValue;
-    };
-
-    const logout = (): void => {
+    /**
+     * 清除用戶資訊
+     */
+    const clearUser = (): void => {
       user.value = null;
-      token.value = null;
-    };
-
-    // 模擬登入（測試用）
-    const mockLogin = (): void => {
-      setUser({
-        id: "1",
-        name: "張三",
-        role: "admin",
-        email: "admin@example.com",
-      });
-      setToken("mock-token-123");
     };
 
     return {
       // State
       user,
-      token,
       // Getters
-      isAuthenticated,
       isAdmin,
+      isManager,
       userName,
       userRole,
+      userDepartment,
       // Actions
       setUser,
-      setToken,
-      logout,
-      mockLogin,
+      clearUser,
     };
   },
   {
     persist: {
-      key: "user-info",
-      pick: ["user", "token"],
+      key: 'user-info',
+      pick: ['user'],
     },
   }
 );

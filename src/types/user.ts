@@ -1,43 +1,29 @@
 /**
- * 用戶相關型別定義
+ * 使用者相關型別定義
  */
 
-/**
- * 用戶角色
- */
-export type UserRole = "admin" | "user" | "manager" | "viewer";
+export type UserRole = 'admin' | 'manager' | 'user';
 
 /**
- * 用戶資訊介面
+ * 使用者資訊介面
  */
 export interface UserInfo {
-  id?: string;
-  name: string;
+  id: string;
+  username: string; // 用戶名（用於登入）
+  name?: string; // 真實姓名(可選)
   role: UserRole;
-  avatar?: string;
-  email?: string;
+  department: string; // 主要部門（目前使用）
+  mustChangePassword?: boolean; // 是否需要修改密碼（首次登入或密碼被重置）
+  email?: string; // Email(預留擴展，未來可啟用)
+  phone?: string; // 電話(可選)
+  active?: boolean; // 帳號是否啟用
+  createdAt?: string; // 建立時間
+  updatedAt?: string; // 更新時間
+  lastLoginAt?: string; // 最後登入時間
 }
 
-/**
- * 用戶 Store 狀態介面
- */
-export interface UserState {
-  user: UserInfo | null;
-  isAuthenticated: boolean;
-}
-
-/**
- * 登入請求參數
- */
-export interface LoginPayload {
-  username: string;
-  password: string;
-}
-
-/**
- * 登入回應
- */
-export interface LoginResponse {
-  user: UserInfo;
-  token: string;
-}
+export const ROLE_LABELS: Record<UserRole, string> = {
+  admin: '系統管理員',
+  manager: '部門主管',
+  user: '一般員工',
+};

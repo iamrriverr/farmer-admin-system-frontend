@@ -1,60 +1,51 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useSidebarStore } from '@/stores/sidebar'
-import HeaderTitle from './HeaderTitle.vue'
-import ThemeToggle from './ThemeToggle.vue'
+import { useSidebarStore } from '@/stores/sidebar';
 
-const sidebarStore = useSidebarStore()
+import HeaderTitle from './HeaderTitle.vue';
 
-// ✅ 動態計算左側距離
-const headerMarginLeft = computed(() => {
-    return sidebarStore.isPinned ? '336px' : '80px'
-})
-
-// ✅ 動態計算寬度（避免重疊）
-const headerWidth = computed(() => {
-    return sidebarStore.isPinned
-        ? 'calc(100% - 336px)'
-        : 'calc(100% - 80px)'
-})
+const sidebarStore = useSidebarStore();
 </script>
 
 <template>
-    <header class="app-header" :style="{
-        marginLeft: headerMarginLeft,
-        width: headerWidth
-    }">
-        <HeaderTitle />
-        <div class="header-actions">
-            <ThemeToggle />
-        </div>
-    </header>
+  <header class="app-header">
+    <HeaderTitle />
+  </header>
 </template>
 
 <style scoped>
 .app-header {
-    height: 4rem;
-    background-color: var(--bg-primary);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 30;
-    padding: 0 1.5rem;
-    transition: all var(--transition-duration, 0.3s) ease;
-    /* ✅ 改為 all */
-    box-sizing: border-box;
-    gap: 1rem;
-    /* ✅ 新增：標題與按鈕間距 */
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 60;
+  box-sizing: border-box;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  padding: 0 1.5rem;
+  background-color: var(--bg-primary);
+
+  /* 修正：指定動畫屬性，避免主題切換時背景色彩過渡產生的黑閃 */
+  transition:
+    margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-shrink: 0;
-    /* ✅ 防止按鈕被壓縮 */
+/* 預設寬度設定 (寬螢幕跟隨 Store) */
+@media (width >= 1025px) {
+  .app-header {
+    width: v-bind('sidebarStore.isSecondaryExpanded ? "calc(100% - 336px)" : "calc(100% - 80px)"');
+    margin-left: v-bind('sidebarStore.isSecondaryExpanded ? "336px" : "80px"');
+  }
+}
+
+/* 1024px 以下（或高縮放）：側邊欄改為覆蓋模式，Header 保持 80px 邊距避開 MainSidebar */
+@media (width <= 1024px) {
+  .app-header {
+    width: calc(100% - 80px);
+    margin-left: 80px;
+  }
 }
 </style>

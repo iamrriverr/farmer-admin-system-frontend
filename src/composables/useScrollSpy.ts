@@ -1,4 +1,4 @@
-import { ref, onMounted, onBeforeUnmount } from "vue";
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 interface ScrollSpyOptions {
   threshold?: number;
@@ -10,10 +10,10 @@ interface ScrollSpyOptions {
  * 用於追蹤當前可見的訊息（用戶問題）
  */
 export function useScrollSpy(options: ScrollSpyOptions = {}) {
-  const { threshold = 0.5, rootMargin = "-20% 0px -80% 0px" } = options;
+  const { threshold = 0.5, rootMargin = '-20% 0px -80% 0px' } = options;
 
   const currentMessageId = ref<string | null>(null);
-  const currentMessageContent = ref<string>("");
+  const currentMessageContent = ref<string>('');
 
   let observer: IntersectionObserver | null = null;
 
@@ -22,7 +22,7 @@ export function useScrollSpy(options: ScrollSpyOptions = {}) {
    */
   const truncateText = (text: string, maxLength: number = 40): string => {
     if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + "...";
+    return text.slice(0, maxLength) + '...';
   };
 
   /**
@@ -36,9 +36,9 @@ export function useScrollSpy(options: ScrollSpyOptions = {}) {
         const role = element.dataset.role;
 
         // 只追蹤用戶問題
-        if (role === "user" && messageId) {
+        if (role === 'user' && messageId) {
           currentMessageId.value = messageId;
-          const content = element.textContent || "";
+          const content = element.textContent || '';
           currentMessageContent.value = truncateText(content);
         }
       }
@@ -49,7 +49,7 @@ export function useScrollSpy(options: ScrollSpyOptions = {}) {
    * 初始化 Observer
    */
   const initObserver = (): void => {
-    if (typeof window === "undefined") return;
+    if (typeof window === 'undefined') return;
 
     observer = new IntersectionObserver(handleIntersection, {
       threshold,

@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { useSidebarStore } from '@/stores/sidebar'
-import farmersLogo from '@/assets/images/national_farmers_logo.png'
+import { useRouter } from 'vue-router';
 
-const router = useRouter()
-const sidebarStore = useSidebarStore()
+import farmersLogo from '@/assets/images/national_farmers_logo.png';
+import { useSidebarStore } from '@/stores/sidebar';
+
+const router = useRouter();
+const sidebarStore = useSidebarStore();
 
 const handleLogoClick = (): void => {
-  router.push('/chat')
-  sidebarStore.setActiveModule('conversation') // ✅ 更新側邊欄狀態
-}
+  router.push('/chat');
+  sidebarStore.setActiveModule('conversation'); // 更新側邊欄狀態
+};
 </script>
 
 <template>
@@ -20,23 +21,25 @@ const handleLogoClick = (): void => {
 
 <style scoped>
 .logo-button {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: transparent;
-  border: none;
+  width: 3rem;
+  height: 3rem;
   padding: 0;
   overflow: hidden;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 0.75rem;
 }
 
 .logo-button:hover {
-  transform: scale(1.05);
   background-color: var(--bg-secondary);
+  transform: scale(1.05);
+  transition:
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease;
 }
 
 .logo-image {

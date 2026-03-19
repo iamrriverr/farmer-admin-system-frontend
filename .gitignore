@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Release notes
+releases/
+
+# source
+source/
+
+# .agent
+.agent/
+
+# docs
+docs/

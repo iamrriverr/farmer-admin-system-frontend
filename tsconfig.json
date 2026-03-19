@@ -21,7 +21,6 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Path aliases */
-    "ignoreDeprecations": "6.0",  //臨時消除baseUrl的棄用警告
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
