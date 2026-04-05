@@ -8,12 +8,26 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
 
-const app = createApp(App);
+async function bootstrap() {
+  const app = createApp(App);
 
-// Pinia
-const pinia = createPinia();
-pinia.use(piniaPluginPersistedstate);
+  // 1. 啟動 MSW (僅在開發環境且 VITE_USE_MOCK=true 時)
+  if (import.meta.env.DEV && import.meta.env.VITE_USE_MOCK === 'true') {
+    const { worker } = await import('./mock/browser');
+    await worker.start({
+      onUnhandledRequest: 'bypass', // 對於非 API 請求（資源檔）直接放行
+    });
+    console.log('%c[MSW] Mocking enabled.', 'color: #3b82f6; font-weight: bold;');
+  }
 
-app.use(pinia);
-app.use(router);
-app.mount('#app');
+  // 2. Pinia
+  const pinia = createPinia();
+  pinia.use(piniaPluginPersistedstate);
+
+  // 3. Mount
+  app.use(pinia);
+  app.use(router);
+  app.mount('#app');
+}
+
+bootstrap();
