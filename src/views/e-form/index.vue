@@ -1,15 +1,24 @@
 <template>
   <div class="eform-page">
-    <PageHeader title="電子表單生成" subtitle="選擇業務別和所需表單，填入申請人基本資訊，系統將自動套用至各表單對應欄位">
+    <PageHeader
+      title="電子表單生成"
+      subtitle="選擇業務別和所需表單，填入申請人基本資訊，系統將自動套用至各表單對應欄位"
+    >
       <template #action>
         <!-- 歷程按鈕 -->
         <button class="btn-history" @click="showHistory = true">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="btn-icon">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           生成歷程
-          <span v-if="eformStore.sessions.length" class="history-badge">{{ eformStore.sessions.length }}</span>
+          <span v-if="eformStore.sessions.length" class="history-badge">{{
+            eformStore.sessions.length
+          }}</span>
         </button>
       </template>
     </PageHeader>
@@ -24,20 +33,30 @@
       <Transition name="step-slide" mode="out-in">
         <!-- 步驟 1 -->
         <div v-if="currentStep === 1" key="step1" class="step-content">
-          <BusinessSelector v-model:selected-business-id="selectedBusinessId"
-            v-model:selected-template-ids="selectedTemplateIds" />
+          <BusinessSelector
+            v-model:selected-business-id="selectedBusinessId"
+            v-model:selected-template-ids="selectedTemplateIds"
+          />
         </div>
 
         <!-- 步驟 2 -->
         <div v-else-if="currentStep === 2" key="step2" class="step-content">
-          <ApplicantForm v-model="applicantData" :union-fields="unionFields"
-            :selected-count="selectedTemplateIds.length" :show-errors="showFormErrors" />
+          <ApplicantForm
+            v-model="applicantData"
+            :union-fields="unionFields"
+            :selected-count="selectedTemplateIds.length"
+            :show-errors="showFormErrors"
+          />
         </div>
 
         <!-- 步驟 3 -->
         <div v-else key="step3" class="step-content">
-          <GenerateResult :templates="selectedTemplates" :business-type-name="selectedBusinessType?.name ?? ''"
-            :filled-data="applicantData" @restart="handleRestart" />
+          <GenerateResult
+            :templates="selectedTemplates"
+            :business-type-name="selectedBusinessType?.name ?? ''"
+            :filled-data="applicantData"
+            @restart="handleRestart"
+          />
         </div>
       </Transition>
     </div>
@@ -46,7 +65,12 @@
     <div class="nav-footer">
       <button class="btn-secondary" :disabled="currentStep === 1" @click="prevStep">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="btn-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"
+          />
         </svg>
         上一步
       </button>
@@ -68,32 +92,47 @@
       <!-- 步驟 3：重新開始 -->
       <button v-else class="btn-restart-nav" @click="handleRestart">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="btn-icon">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+          />
         </svg>
         重新開始
       </button>
     </div>
 
     <!-- 側邊歷程抽屜 -->
-    <SessionHistory :is-open="showHistory" :sessions="eformStore.sessions" @close="showHistory = false" />
+    <SessionHistory
+      :is-open="showHistory"
+      :sessions="eformStore.sessions"
+      @close="showHistory = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+
+import PageHeader from '@/components/common/PageHeader.vue';
 import { useEFormStore } from '@/stores/eform';
 import { useUserStore } from '@/stores/user';
-import PageHeader from '@/components/common/PageHeader.vue';
-import StepIndicator from './components/StepIndicator.vue';
-import BusinessSelector from './components/BusinessSelector.vue';
+import type { ApplicantFieldDef, EFormTemplate } from '@/types/form';
+
 import ApplicantForm from './components/ApplicantForm.vue';
+import BusinessSelector from './components/BusinessSelector.vue';
 import GenerateResult from './components/GenerateResult.vue';
 import SessionHistory from './components/SessionHistory.vue';
-import type { ApplicantFieldDef, EFormTemplate } from '@/types/form';
+import StepIndicator from './components/StepIndicator.vue';
 
 const eformStore = useEFormStore();
 const userStore = useUserStore();
+
+onMounted(() => {
+  eformStore.fetchBusinessTypes();
+  eformStore.fetchSessions();
+});
 
 // 步驟狀態
 const currentStep = ref(1);
@@ -110,21 +149,19 @@ const showFormErrors = ref(false);
 const showHistory = ref(false);
 
 // Computed
-const selectedBusinessType = computed(() =>
-  eformStore.businessTypes.find((b) => b.id === selectedBusinessId.value) ?? null,
+const selectedBusinessType = computed(
+  () => eformStore.businessTypes.find((b) => b.id === selectedBusinessId.value) ?? null
 );
 
 const selectedTemplates = computed<EFormTemplate[]>(() => {
   if (!selectedBusinessType.value) return [];
   return selectedBusinessType.value.templates.filter((t) =>
-    selectedTemplateIds.value.includes(t.id),
+    selectedTemplateIds.value.includes(t.id)
   );
 });
 
 const unionFields = computed<ApplicantFieldDef[]>(() =>
-  selectedTemplateIds.value.length > 0
-    ? eformStore.getUnionFields(selectedTemplateIds.value)
-    : [],
+  selectedTemplateIds.value.length > 0 ? eformStore.getUnionFields(selectedTemplateIds.value) : []
 );
 
 const canProceed = computed(() => {
@@ -133,9 +170,7 @@ const canProceed = computed(() => {
   }
   if (currentStep.value === 2) {
     // 必填欄位全部填入
-    return unionFields.value.every(
-      (f) => !f.required || !!applicantData.value[f.key]?.trim(),
-    );
+    return unionFields.value.every((f) => !f.required || !!applicantData.value[f.key]?.trim());
   }
   return false;
 });
@@ -174,35 +209,38 @@ function handleRestart() {
 
 <style scoped>
 .eform-page {
-  padding: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  max-width: 900px;
+  padding: 2rem;
+  margin: 0 auto;
 }
 
 /* 歷程按鈕 */
 .btn-history {
+  position: relative;
   display: flex;
-  align-items: center;
   gap: 0.5rem;
+  align-items: center;
   padding: 0.625rem 1.125rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
+  cursor: pointer;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-primary);
   border-radius: 0.5rem;
-  cursor: pointer;
-  position: relative;
 }
 
 .btn-history:hover {
-  border-color: var(--primary);
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 6%, var(--bg-tertiary));
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  border-color: var(--primary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .history-badge {
@@ -221,11 +259,11 @@ function handleRestart() {
 
 /* 內容卡片 */
 .content-card {
+  min-height: 300px;
+  padding: 1.75rem;
   background: var(--bg-secondary);
   border: 1px solid var(--border-primary);
   border-radius: 0.875rem;
-  padding: 1.75rem;
-  min-height: 300px;
 }
 
 .step-content {
@@ -245,21 +283,21 @@ function handleRestart() {
 
 .btn-secondary {
   display: flex;
-  align-items: center;
   gap: 0.375rem;
+  align-items: center;
   padding: 0.625rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
+  cursor: pointer;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-primary);
   border-radius: 0.5rem;
-  cursor: pointer;
 }
 
 .btn-secondary:disabled {
-  opacity: 0.4;
   cursor: not-allowed;
+  opacity: 0.4;
 }
 
 .btn-secondary:hover:not(:disabled) {
@@ -269,21 +307,21 @@ function handleRestart() {
 
 .btn-primary {
   display: flex;
-  align-items: center;
   gap: 0.375rem;
+  align-items: center;
   padding: 0.625rem 1.5rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: white;
+  cursor: pointer;
   background: var(--primary);
   border: none;
   border-radius: 0.5rem;
-  cursor: pointer;
 }
 
 .btn-primary:disabled {
-  opacity: 0.45;
   cursor: not-allowed;
+  opacity: 0.45;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -298,30 +336,33 @@ function handleRestart() {
 
 .btn-restart-nav {
   display: flex;
-  align-items: center;
   gap: 0.375rem;
+  align-items: center;
   padding: 0.625rem 1.25rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-primary);
+  cursor: pointer;
   background: var(--bg-tertiary);
   border: 1px solid var(--border-primary);
   border-radius: 0.5rem;
-  cursor: pointer;
 }
 
 .btn-restart-nav:hover {
-  border-color: var(--primary);
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 6%, var(--bg-tertiary));
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  border-color: var(--primary);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .nav-info {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 0.2rem;
+  align-items: center;
 }
 
 .step-count {
@@ -338,7 +379,9 @@ function handleRestart() {
 /* 步驟切換動畫 */
 .step-slide-enter-active,
 .step-slide-leave-active {
-  transition: opacity 0.28s ease, transform 0.28s ease;
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s ease;
 }
 
 .step-slide-enter-from {

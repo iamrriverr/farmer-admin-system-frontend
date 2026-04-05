@@ -1,36 +1,84 @@
 <template>
   <div class="knowledge-page">
-    <PageHeader title="知識庫管理" subtitle="管理 AI 知識庫文件，文件上傳後將自動解析並建立可檢索的向量索引">
+    <PageHeader
+      title="知識庫管理"
+      subtitle="管理 AI 知識庫文件，文件上傳後將自動解析並建立可檢索的向量索引"
+    >
       <template #action>
-        <IconBtn v-if="canUpload" icon="PLUS" label="上傳文件" class="btn-primary" @click="showUploadModal = true" />
+        <IconBtn
+          v-if="canUpload"
+          icon="PLUS"
+          label="上傳文件"
+          class="btn-primary"
+          @click="showUploadModal = true"
+        />
       </template>
     </PageHeader>
 
-    <SearchToolbar v-model:search-query="searchQuery" v-model:filter-category="filterCategory"
-      v-model:filter-department="filterDepartment" v-model:filter-status="filterStatus" :categories="categories"
-      :departments="departments" :is-admin="isAdmin" />
+    <SearchToolbar
+      v-model:search-query="searchQuery"
+      v-model:filter-category="filterCategory"
+      v-model:filter-department="filterDepartment"
+      v-model:filter-status="filterStatus"
+      :categories="categories"
+      :departments="departments"
+      :is-admin="isAdmin"
+    />
 
-    <DocumentTable :documents="paginatedDocuments" :is-admin="isAdmin" :is-manager="isManager" :sort-field="sortField"
-      :sort-order="sortOrder" @detail="handleDetail" @preview="handlePreview" @edit="handleEdit" @delete="handleDelete"
-      @sort="handleSort" />
+    <DocumentTable
+      :documents="paginatedDocuments"
+      :is-admin="isAdmin"
+      :is-manager="isManager"
+      :sort-field="sortField"
+      :sort-order="sortOrder"
+      @detail="handleDetail"
+      @preview="handlePreview"
+      @edit="handleEdit"
+      @delete="handleDelete"
+      @sort="handleSort"
+    />
 
-    <Pagination :current-page="currentPage" :total-pages="totalPages" :total="total" :start-index="startIndex"
-      :end-index="endIndex" @page-change="goToPage" />
+    <Pagination
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      :total="total"
+      :start-index="startIndex"
+      :end-index="endIndex"
+      @page-change="goToPage"
+    />
 
     <!-- 上傳文件 Modal -->
-    <UploadDocumentModal v-model="showUploadModal" :departments="departments" @submit="handleUpload" />
+    <UploadDocumentModal
+      v-model="showUploadModal"
+      :departments="departments"
+      @submit="handleUpload"
+    />
 
     <!-- 文件詳情/編輯 Modal -->
-    <DocumentDetailModal v-model="showDetailModal" :document="selectedDocument" :departments="departments"
-      @save="handleSave" />
+    <DocumentDetailModal
+      v-model="showDetailModal"
+      :document="selectedDocument"
+      :departments="departments"
+      @save="handleSave"
+    />
 
     <!-- 刪除確認 Modal -->
-    <BaseModal v-model="showDeleteModal" title="確認刪除" size="sm" confirm-text="確認刪除" @confirm="handleConfirmDelete">
+    <BaseModal
+      v-model="showDeleteModal"
+      title="確認刪除"
+      size="sm"
+      confirm-text="確認刪除"
+      @confirm="handleConfirmDelete"
+    >
       <div class="delete-confirm-content">
         <div class="warning-icon-container">
           <svg class="warning-icon-large" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            />
           </svg>
         </div>
         <div class="message-container">
@@ -46,25 +94,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { usePermission } from '@/composables/usePermission';
-import { useUserStore } from '@/stores/user';
-import { useKnowledgeStore } from '@/stores/knowledge';
-import { useDepartmentStore } from '@/stores/department';
-import IconBtn from '@/components/base/IconBtn.vue';
+import { computed, onMounted, ref } from 'vue';
+
 import BaseModal from '@/components/base/BaseModal.vue';
+import IconBtn from '@/components/base/IconBtn.vue';
 import PageHeader from '@/components/common/PageHeader.vue';
 import Pagination from '@/components/common/Pagination.vue';
-import SearchToolbar from './components/SearchToolbar.vue';
-import DocumentTable from './components/DocumentTable.vue';
-import UploadDocumentModal from './components/modals/UploadDocumentModal.vue';
-import DocumentDetailModal from './components/modals/DocumentDetailModal.vue';
+import { usePermission } from '@/composables/usePermission';
+import { useDepartmentStore } from '@/stores/department';
+import { useKnowledgeStore } from '@/stores/knowledge';
+import { useUserStore } from '@/stores/user';
 import type { KnowledgeDocument } from '@/types/knowledge';
+
+import DocumentTable from './components/DocumentTable.vue';
+import DocumentDetailModal from './components/modals/DocumentDetailModal.vue';
+import UploadDocumentModal from './components/modals/UploadDocumentModal.vue';
+import SearchToolbar from './components/SearchToolbar.vue';
 
 const { isAdmin, isManager } = usePermission();
 const userStore = useUserStore();
 const knowledgeStore = useKnowledgeStore();
 const departmentStore = useDepartmentStore();
+
+onMounted(() => {
+  knowledgeStore.fetchDocuments();
+  departmentStore.fetchDepartments();
+});
 
 // 只有管理員和主管可以上傳
 const canUpload = computed(() => isAdmin.value || isManager.value);
@@ -147,7 +202,8 @@ const filteredDocuments = computed(() => {
     result = [...result].sort((a, b) => {
       const aVal = (a as any)[sortField.value] ?? '';
       const bVal = (b as any)[sortField.value] ?? '';
-      const cmp = typeof aVal === 'string' ? aVal.localeCompare(bVal) : (aVal as number) - (bVal as number);
+      const cmp =
+        typeof aVal === 'string' ? aVal.localeCompare(bVal) : (aVal as number) - (bVal as number);
       return sortOrder.value === 'asc' ? cmp : -cmp;
     });
   }
@@ -161,7 +217,9 @@ const pageSize = 10;
 
 const total = computed(() => filteredDocuments.value.length);
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)));
-const startIndex = computed(() => Math.min((currentPage.value - 1) * pageSize + 1, total.value || 1));
+const startIndex = computed(() =>
+  Math.min((currentPage.value - 1) * pageSize + 1, total.value || 1)
+);
 const endIndex = computed(() => Math.min(currentPage.value * pageSize, total.value));
 
 const paginatedDocuments = computed(() => {
@@ -225,8 +283,8 @@ const handleConfirmDelete = () => {
 
 <style scoped>
 .knowledge-page {
-  padding: 2rem;
   max-width: 1400px;
+  padding: 2rem;
   margin: 0 auto;
 }
 
@@ -235,10 +293,10 @@ const handleConfirmDelete = () => {
   font-size: 0.875rem;
   font-weight: 500;
   color: white;
+  cursor: pointer;
   background: var(--primary);
   border: none;
   border-radius: 0.5rem;
-  cursor: pointer;
   transition: background-color 0.2s;
 }
 
@@ -250,8 +308,8 @@ const handleConfirmDelete = () => {
 .delete-confirm-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 1.5rem;
+  align-items: center;
   text-align: center;
 }
 
@@ -261,7 +319,7 @@ const handleConfirmDelete = () => {
   justify-content: center;
   width: 4rem;
   height: 4rem;
-  background: rgba(239, 68, 68, 0.1);
+  background: rgb(239 68 68 / 10%);
   border-radius: 50%;
 }
 
@@ -293,8 +351,8 @@ const handleConfirmDelete = () => {
 .warning-box {
   width: 100%;
   padding: 0.75rem;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgb(239 68 68 / 10%);
+  border: 1px solid rgb(239 68 68 / 30%);
   border-radius: 0.5rem;
 }
 
